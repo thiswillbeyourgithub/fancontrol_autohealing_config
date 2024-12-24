@@ -33,7 +33,7 @@ On Linux systems using lm-sensors and fancontrol, the hwmon device numbers (e.g.
 
 1. Clone this repository:
 ```bash
-git clone https://github.com/yourusername/fancontrol-parser.git
+git clone https://github.com/thiswillbeyourgithub/fancontrol-parser.git
 ```
 
 2. Make the script executable:
