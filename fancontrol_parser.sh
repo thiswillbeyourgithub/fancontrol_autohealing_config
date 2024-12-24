@@ -1,5 +1,11 @@
 #!/bin/zsh
 
+# Updates hwmon device numbers in fancontrol configuration when they change after reboot
+
+# Usage: fancontrol_parser.sh [-q|--quiet] [-d|--dry]
+#   -q, --quiet    Suppress output messages
+#   -d, --dry      Dry run mode - show what would change without making changes
+
 zparseopts -D -E \
 q=quiet -quiet=quiet \
 d=dry -dry=dry \
