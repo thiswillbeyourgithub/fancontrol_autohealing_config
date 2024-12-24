@@ -95,6 +95,7 @@ log "coretemp: $old_coretemp -> $new_coretemp"
 log "f71869a: $old_f71869a -> $new_f71869a"
 
 if [[ $dry ]]
+then
     log "Exit without modification because in dry mode"
     exit 0
 fi
