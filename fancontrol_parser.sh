@@ -105,11 +105,20 @@ if [[ -n "$new_coretemp" && -n "$new_f71869a" ]]; then
     # Create temporary file
     temp_file=$(mktemp)
     
-    # First replace coretemp
-    sed "s/$old_coretemp/$new_coretemp/g" "$FANCONTROL_FILE" > "$temp_file"
+    # Use placeholder to avoid conflicts during substitution
+    placeholder="TEMP_HWMON_PLACEHOLDER"
+    
+    # First replace coretemp with placeholder
+    sed "s/$old_coretemp/$placeholder/g" "$FANCONTROL_FILE" > "$temp_file"
     
     # Then replace f71869a
-    sed "s/$old_f71869a/$new_f71869a/g" "$temp_file" > "$FANCONTROL_FILE"
+    sed "s/$old_f71869a/$new_f71869a/g" "$temp_file" > "${temp_file}.2"
+    
+    # Finally replace placeholder with new coretemp
+    sed "s/$placeholder/$new_coretemp/g" "${temp_file}.2" > "$FANCONTROL_FILE"
+    
+    # Clean up additional temp file
+    rm "${temp_file}.2"
     
     # Clean up
     rm "$temp_file"
