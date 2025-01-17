@@ -85,14 +85,19 @@ done < "$FANCONTROL_FILE"
 new_coretemp=$(find_current_hwmon "coretemp")
 new_f71869a=$(find_current_hwmon "f71869a")
 
+log "coretemp: $old_coretemp -> $new_coretemp"
+log "f71869a: $old_f71869a -> $new_f71869a"
+
+if [[ "$new_coretemp" == "Error*" || "$new_f71869a" == "Error*" ]]; then
+    log "Failed to find the hwmon of some devices!"
+    exit 1
+fi
+
 # Check if the new hwmon numbers are different from the old ones
 if [[ "$new_coretemp" == "$old_coretemp" && "$new_f71869a" == "$old_f71869a" ]]; then
     log "No changes needed - hwmon numbers are the same"
     exit 0
 fi
-
-log "coretemp: $old_coretemp -> $new_coretemp"
-log "f71869a: $old_f71869a -> $new_f71869a"
 
 if [[ $dry ]]
 then
