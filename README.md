@@ -1,6 +1,6 @@
 # Fancontrol Parser
 
-A utility script to automatically update hwmon device numbers in the fancontrol configuration file when they change after system reboot.
+A Python utility to automatically update hwmon device numbers in the fancontrol configuration file when they change after system reboot.
 
 ## Background
 
@@ -17,7 +17,7 @@ On Linux systems using lm-sensors and fancontrol, the hwmon device numbers (e.g.
 
 ## Prerequisites
 
-- ZSH shell
+- Python 3
 - lm-sensors and fancontrol packages installed
 - Root privileges (for modifying /etc/fancontrol)
 
@@ -28,25 +28,20 @@ On Linux systems using lm-sensors and fancontrol, the hwmon device numbers (e.g.
 git clone https://github.com/thiswillbeyourgithub/fancontrol-parser.git
 ```
 
-2. Make the script executable:
-```bash
-chmod +x fancontrol_parser.sh
-```
-
 ## Usage
 
 ```bash
-./fancontrol_parser.sh [-q|--quiet] [-d|--dry]
+sudo python3 fancontrol_parser.py [--quiet] [--apply]
 ```
 
 Options:
-- `-q, --quiet`: Suppress output messages
-- `-d, --dry`: Dry run mode - show what would change without making changes
+- `--quiet, -q`: Suppress output messages
+- `--apply, -a`: Apply changes (without this flag, runs in dry-run mode)
 
 ## Example
 
 ```bash
-sudo ./fancontrol_parser.sh
+sudo python3 fancontrol_parser.py --apply
 ```
 
 This will:
@@ -57,7 +52,34 @@ This will:
 
 ## Automatic Execution
 
-You can add this script to your system's startup sequence to ensure fan control works correctly after every reboot. One way to do this is by creating a systemd service that runs before the fancontrol service.
+You can add this script to your system's startup sequence to ensure fan control works correctly after every reboot. One way to do this is by creating a systemd service that runs before the fancontrol service:
+
+```bash
+# Create a systemd service file
+sudo nano /etc/systemd/system/fancontrol-parser.service
+```
+
+Add the following content:
+
+```
+[Unit]
+Description=Update hwmon device numbers in fancontrol config
+Before=fancontrol.service
+After=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /path/to/fancontrol_parser.py --apply
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Then enable the service:
+
+```bash
+sudo systemctl enable fancontrol-parser.service
+```
 
 ## License
 
