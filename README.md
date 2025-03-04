@@ -8,7 +8,7 @@ On Linux systems using lm-sensors and fancontrol, the hwmon device numbers (e.g.
 
 ## Features
 
-- Automatically detects current hwmon numbers for coretemp and f71869a devices
+- Automatically detects current hwmon numbers for coretemp and fan devices
 - Updates the fancontrol configuration file with new device numbers
 - Restarts the fancontrol service automatically
 - Dry run mode to preview changes
@@ -51,7 +51,7 @@ sudo ./fancontrol_parser.sh
 
 This will:
 1. Check if fancontrol service is already running
-2. Find current hwmon numbers for coretemp and f71869a devices
+2. Find current hwmon numbers for coretemp and fan devices
 3. Update the configuration if numbers have changed
 4. Restart the fancontrol service
 
