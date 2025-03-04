@@ -85,12 +85,25 @@ find_current_hwmon() {
     log "$current_hwmon"
 }
 
-# Read the fancontrol file and extract current assignments
+# Read the fancontrol file and extract current assignments from DEVNAME line
 while IFS= read -r line; do
-    if [[ "$line" == "#### coretemp="* ]]; then
-        old_coretemp=${line#*=}
-    elif [[ "$line" == "#### $fandevice="* ]]; then
-        old_fandevice=${line#*=}
+    if [[ "$line" == "DEVNAME="* ]]; then
+        # Extract the DEVNAME line content
+        devname_content=${line#DEVNAME=}
+        
+        # Parse each hwmon assignment
+        for assignment in $devname_content; do
+            # Split the hwmon=device pair
+            hwmon=${assignment%=*}
+            device=${assignment#*=}
+            
+            # Store the hwmon number for each device
+            if [[ "$device" == "coretemp" ]]; then
+                old_coretemp=$hwmon
+            elif [[ "$device" == "$fandevice" ]]; then
+                old_fandevice=$hwmon
+            fi
+        done
     fi
 done < "$FANCONTROL_FILE"
 
