@@ -38,10 +38,10 @@ def main():
     # Parse command line arguments
     args = sys.argv[1:]
     quiet = '-q' in args or '--quiet' in args
-    dry = '-d' in args or '--dry' in args
+    apply = '-a' in args or '--apply' in args
 
-    if dry:
-        log("Dry mode")
+    if not apply:
+        log("Dry mode (use --apply to make changes)")
 
     # Check if fancontrol service is already running
     if subprocess.run(["systemctl", "is-active", "--quiet", "fancontrol.service"]).returncode == 0:
@@ -88,8 +88,8 @@ def main():
         log("No changes needed - hwmon numbers are the same")
         sys.exit(0)
 
-    if dry:
-        log("Exit without modification because in dry mode")
+    if not apply:
+        log("Exit without modification because --apply was not specified")
         sys.exit(0)
 
     # Only proceed if we found both devices
