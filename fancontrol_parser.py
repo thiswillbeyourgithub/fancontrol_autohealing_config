@@ -39,17 +39,6 @@ def main():
     args = sys.argv[1:]
     quiet = '-q' in args or '--quiet' in args
     dry = '-d' in args or '--dry' in args
-    fandevice = None
-
-    for arg in args:
-        if arg.startswith('--fandevice='):
-            fandevice = arg.split('=')[1]
-        elif arg == '--fandevice':
-            fandevice = args[args.index(arg) + 1]
-
-    if not fandevice:
-        log("You have to specify a --fandevice like --fandevice nct6775 (use a space, not an equal sign)")
-        sys.exit(1)
 
     if dry:
         log("Dry mode")
@@ -65,6 +54,7 @@ def main():
     # Read the fancontrol file and extract current assignments from DEVNAME line
     old_coretemp = None
     old_fandevice = None
+    fandevice = None
 
     with open(FANCONTROL_FILE, 'r') as f:
         for line in f:
@@ -74,8 +64,13 @@ def main():
                     hwmon, device = assignment.split('=')
                     if device == "coretemp":
                         old_coretemp = hwmon
-                    elif device == fandevice:
+                    elif device != "coretemp":
                         old_fandevice = hwmon
+                        fandevice = device
+    
+    if not fandevice:
+        log("Error: Could not find fan device in fancontrol file")
+        sys.exit(1)
 
     # Find current hwmon numbers
     new_coretemp = find_current_hwmon("coretemp")
