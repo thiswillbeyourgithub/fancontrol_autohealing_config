@@ -61,7 +61,7 @@ You can add this script to your system's startup sequence to ensure fan control 
 
 ## License
 
-MIT License
+GPLv3
 
 ## Contributing
 
