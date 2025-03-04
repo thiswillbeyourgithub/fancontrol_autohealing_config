@@ -20,14 +20,6 @@ On Linux systems using lm-sensors and fancontrol, the hwmon device numbers (e.g.
 - ZSH shell
 - lm-sensors and fancontrol packages installed
 - Root privileges (for modifying /etc/fancontrol)
-- `/etc/fancontrol` must contain these marker lines for the script to work:
-```
-# THOSE LINES GET PARSED BY A DIY SCRIPT TO MAKE THE NAMES AUTOHEALING
-# BEGIN
-#### coretemp=hwmon1
-#### f71869a=hwmon2
-# DONE
-```
 
 ## Installation
 
