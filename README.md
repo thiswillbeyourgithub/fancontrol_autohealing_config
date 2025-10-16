@@ -50,6 +50,31 @@ This will:
 3. Update the configuration if numbers have changed
 4. Restart the fancontrol service
 
+## Helper Scripts
+
+### generate_hwmon_mappings.sh
+
+A diagnostic script that creates a CSV table mapping hwmon device numbers to their corresponding hardware models and names. This is useful for identifying which hwmon device corresponds to which hardware component when configuring fancontrol.
+
+Usage:
+```bash
+# Generate mapping and save to default location (/etc/fancontrol_mappings)
+sudo ./generate_hwmon_mappings.sh
+
+# Save to custom location
+sudo ./generate_hwmon_mappings.sh --output-path /path/to/mappings.csv
+
+# Check if mappings have changed without modifying the file
+sudo ./generate_hwmon_mappings.sh --check
+```
+
+The script generates a CSV with three columns:
+- `hwmon`: The hwmon device name (e.g., hwmon0, hwmon1)
+- `device_model`: The hardware model if available
+- `name`: The device name (e.g., coretemp, it8792)
+
+This helps you understand which hwmon numbers to use in your fancontrol configuration before running the parser.
+
 ## Automatic Execution
 
 You can add this script to your system's startup sequence to ensure fan control works correctly after every reboot. One way to do this is by creating a systemd service that runs before the fancontrol service:
