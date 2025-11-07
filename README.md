@@ -66,7 +66,15 @@ sudo ./generate_hwmon_mappings.sh --output-path /path/to/mappings.csv
 
 # Check if mappings have changed without modifying the file
 sudo ./generate_hwmon_mappings.sh --check
+
+# Include battery-related devices (by default they are filtered out)
+sudo ./generate_hwmon_mappings.sh --no-ignore-battery
 ```
+
+Options:
+- `--output-path PATH`: Specify custom output path (default: /etc/fancontrol_mappings)
+- `--check`: Compare current mappings with existing file without modifying it
+- `--no-ignore-battery`: Include battery-related hwmon devices (by default battery devices are filtered out as they can be problematic for some setups)
 
 The script generates a CSV with three columns:
 - `hwmon`: The hwmon device name (e.g., hwmon0, hwmon1)
