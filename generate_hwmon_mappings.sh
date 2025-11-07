@@ -6,6 +6,7 @@
 # Default output path
 output_path="/etc/fancontrol_mappings"
 check_mode=false
+no_ignore_battery=false
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
@@ -18,9 +19,13 @@ while [[ $# -gt 0 ]]; do
             check_mode=true
             shift
             ;;
+        --no-ignore-battery)
+            no_ignore_battery=true
+            shift
+            ;;
         *)
             echo "Unknown option: $1" >&2
-            echo "Usage: $0 [--output-path PATH] [--check]" >&2
+            echo "Usage: $0 [--output-path PATH] [--check] [--no-ignore-battery]" >&2
             exit 1
             ;;
     esac
@@ -74,6 +79,13 @@ if $check_mode; then
     # Check mode: compare with existing file and show diff if different
     if [[ -f "$output_path" ]]; then
         old_content=$(cat "$output_path")
+        
+        # Filter out battery-related lines if not explicitly keeping them
+        # Battery devices can be problematic for some setups
+        if ! $no_ignore_battery; then
+            old_content=$(echo "$old_content" | grep -v -i battery)
+            new_content=$(echo "$new_content" | grep -v -i battery)
+        fi
         
         if [[ "$new_content" != "$old_content" ]]; then
             echo "Content has changed. Diff:" >&2
