@@ -116,7 +116,7 @@ sudo systemctl enable fancontrol-parser.service
 
 ## License
 
-GPLv3
+AGPLv3
 
 ## Contributing
 
