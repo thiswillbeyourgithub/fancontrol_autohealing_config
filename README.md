@@ -8,12 +8,13 @@ On Linux systems using lm-sensors and fancontrol, the hwmon device numbers (e.g.
 
 ## Features
 
-- Automatically detects current hwmon numbers for coretemp and fan devices
-- Updates the fancontrol configuration file with new device numbers
+- Handles any number of hwmon entries in `/etc/fancontrol` (not just coretemp + one fan chip)
+- Matches each entry to a live hwmon by `DEVPATH` (the stable ATA/PCI path), with driver-name fallback when the path alone isn't enough. This is what lets it correctly track devices like `drivetemp`, which can otherwise end up bound to the wrong disk
+- Two-pass placeholder rewrite so hwmon swaps (e.g. `hwmon3` <-> `hwmon4`) don't cascade into wrong values
+- Updates the fancontrol configuration file with the new device numbers
 - Restarts the fancontrol service automatically
 - Dry run mode to preview changes
 - Quiet mode for silent operation
-- Safety checks to prevent unnecessary updates
 
 ## Prerequisites
 
@@ -45,10 +46,12 @@ sudo python3 fancontrol_parser.py --apply
 ```
 
 This will:
-1. Check if fancontrol service is already running
-2. Find current hwmon numbers for coretemp and fan devices
-3. Update the configuration if numbers have changed
+1. Parse every `DEVPATH=` / `DEVNAME=` entry in `/etc/fancontrol`
+2. Match each entry to a live hwmon (by DEVPATH first, driver name as fallback)
+3. Rewrite the configuration if any hwmon numbers have changed
 4. Restart the fancontrol service
+
+Note: the parser no longer skips when `fancontrol.service` is already running. fancontrol can be active but still bound to the wrong sensor (common with `drivetemp` after a hwmon reshuffle), so the check runs unconditionally.
 
 ## Helper Scripts
 
